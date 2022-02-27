@@ -1,5 +1,4 @@
 # GoianiaPlaces
-
 Análise de agrupamentos em restaurantes coletados da API Google Places no município de Goiânia - GO.
 
 Programas R utilizados no Trabalho de Conclusão de Curso do Bacharelado em Estatística pela Universidade Federal de Goiás.
