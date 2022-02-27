@@ -8,7 +8,6 @@ Autor: Lucas Bicalho - 2021/2022
 
 ----------------------------------
 
-# GoianiaPlaces
 Cluster Analysis in restaurants collected at Google Places API in the city of Goiânia - GO.
 
 R programms used in the undergraduate thesis of the Bachelor's Degree in Statistics at the Federal University of Goiás.
