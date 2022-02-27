@@ -21,13 +21,13 @@ places_goiania_ %>%
   filter(user_ratings_total == max(user_ratings_total)) %>%
   select (place_id, name, rating, price_level, user_ratings_total) %>% 
   arrange(place_id) %>%
-  unique() -> df
+  unique() -> df0
 
 # Análise descritiva
-summary(df)
+summary(df0)
 
 ggplot() +
-  aes(x = df$rating) +
+  aes(x = df0$rating) +
   geom_histogram() +
   theme_bw() +
   xlab("rating") +
@@ -35,7 +35,7 @@ ggplot() +
   ggtitle("Histograma da variável avaliação") -> h1
 
 ggplot() +
-  aes(x = df$user_ratings_total) +
+  aes(x = df0$user_ratings_total) +
   geom_histogram() +
   theme_bw() +
   xlab("user_ratings_total") +
@@ -43,7 +43,7 @@ ggplot() +
   ggtitle("Histograma da variável total de avaliações") -> h2
 
 ggplot() +
-  aes(x = df$price_level) +
+  aes(x = df0$price_level) +
   geom_histogram() +
   theme_bw() +
   xlab("price_level") +
@@ -56,11 +56,16 @@ grid.arrange(h1,
              nrow = 2)
 
 # % de NAs por variável
-(colMeans(is.na(df))) -> na_percent 
+(colMeans(is.na(df0))) -> na_percent 
+label_percent()(na_percent) %>% t()
 # print(xtable(label_percent()(na_percent) %>% t(), type = "latex"), file = "prints/na_percent.html")
 
+# registros com valor 0 em rating e user_ratings_total
+df0 %>% filter(rating == 0) %>% group_by(rating) %>% count(rating)
+df0 %>% filter(user_ratings_total == 0) %>% group_by(user_ratings_total) %>% count(user_ratings_total)
+
 # removendo NAs
-df <- na.omit(df)
+df <- na.omit(df0)
 
 # Criando df para cluster
 dfcl <- df %>% ungroup() %>% select (rating, price_level, user_ratings_total) %>% as.data.frame()
