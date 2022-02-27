@@ -26,27 +26,24 @@ places_goiania_ %>%
 # Análise descritiva
 summary(df)
 
-df %>%
 ggplot() +
-  aes(x = rating) +
+  aes(x = df$rating) +
   geom_histogram() +
   theme_bw() +
   xlab("rating") +
   ylab("Frequência") +
   ggtitle("Histograma da variável avaliação") -> h1
 
-df %>%
 ggplot() +
-  aes(x = user_ratings_total) +
+  aes(x = df$user_ratings_total) +
   geom_histogram() +
   theme_bw() +
   xlab("user_ratings_total") +
   ylab("Frequência") +
   ggtitle("Histograma da variável total de avaliações") -> h2
 
-df %>%
 ggplot() +
-  aes(x = price_level) +
+  aes(x = df$price_level) +
   geom_histogram() +
   theme_bw() +
   xlab("price_level") +
@@ -56,7 +53,7 @@ ggplot() +
 grid.arrange(h1,
              h2,
              h3,
-             nrow = 1)
+             nrow = 2)
 
 # % de NAs por variável
 (colMeans(is.na(df))) -> na_percent 
