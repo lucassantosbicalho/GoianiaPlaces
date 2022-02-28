@@ -11,6 +11,7 @@ library(factoextra) # clustering algorithms & visualization
 library(gridExtra) 
 library(xtable)
 library(scales)
+library(ggsn)
 
 # Removendo outlier ChIJCcvH5tnzXpMRz6ktmMrEzf0
 places_goiania %>% filter(place_id != "ChIJCcvH5tnzXpMRz6ktmMrEzf0") -> places_goiania_
@@ -23,6 +24,23 @@ places_goiania_ %>%
   arrange(place_id) %>%
   unique() -> df0
 
+# Estabelecimentos considerados na análise
+df0 %>%
+  ggplot() +
+  geom_polygon(data = shpBairrosGoiania, aes( x = long, y = lat, group = group, alpha = 1), size = 0.1, fill="white", color="darkblue") +
+  geom_polygon(data = shpGoiania, aes( x = long, y = lat, group = group, alpha=1), size = 0.8, fill="white", color="darkblue") +
+  geom_point(aes(x=lng, y=lat), colour = "black", size = 0.2) + 
+  coord_equal() +
+  scalebar(shpGoiania, dist = 5, dist_unit = "km",
+           transform = TRUE, model = "WGS84", height = 0.015, st.size = 3, border.size = 0.3) +
+  theme_bw() +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  guides(fill = guide_legend(label.position = "left", label.hjust = 1)) +
+  labs(title = ("Estabelecimentos coletados via API Google \nPlaces"),
+       subtitle = "Quantidade: 1.155") +
+  theme(legend.position="none") -> df0_plot
+
 # Análise descritiva
 summary(df0)
 
@@ -32,7 +50,7 @@ ggplot() +
   theme_bw() +
   xlab("rating") +
   ylab("Frequência") +
-  ggtitle("Histograma da variável avaliação") -> h1
+  ggtitle("Variável avaliação") -> h1
 
 ggplot() +
   aes(x = df0$user_ratings_total) +
@@ -40,7 +58,7 @@ ggplot() +
   theme_bw() +
   xlab("user_ratings_total") +
   ylab("Frequência") +
-  ggtitle("Histograma da variável total de avaliações") -> h2
+  ggtitle("Variável total de avaliações") -> h2
 
 ggplot() +
   aes(x = df0$price_level) +
@@ -48,12 +66,15 @@ ggplot() +
   theme_bw() +
   xlab("price_level") +
   ylab("Frequência") +
-  ggtitle("Histograma da variável nível de preço") -> h3
+  ggtitle("Variável nível de preço") -> h3
 
 grid.arrange(h1,
              h2,
              h3,
-             nrow = 2)
+             nrow = 1) 
+
+plot(df0$price_level, df0$user_ratings_total)
+plot(df0$price_level, df0$rating)
 
 # % de NAs por variável
 (colMeans(is.na(df0))) -> na_percent 
@@ -66,6 +87,25 @@ df0 %>% filter(user_ratings_total == 0) %>% group_by(user_ratings_total) %>% cou
 
 # removendo NAs
 df <- na.omit(df0)
+
+# Estabelecimentos considerados na análise
+df %>%
+  ggplot() +
+  geom_polygon(data = shpBairrosGoiania, aes( x = long, y = lat, group = group, alpha = 1), size = 0.1, fill="white", color="darkblue") +
+  geom_polygon(data = shpGoiania, aes( x = long, y = lat, group = group, alpha=1), size = 0.8, fill="white", color="darkblue") +
+  geom_point(aes(x=lng, y=lat), colour = "black", size = 0.2) + 
+  coord_equal() +
+  scalebar(shpGoiania, dist = 5, dist_unit = "km",
+           transform = TRUE, model = "WGS84", height = 0.015, st.size = 3, border.size = 0.3) +
+  theme_bw() +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  guides(fill = guide_legend(label.position = "left", label.hjust = 1)) +
+  labs(title = ("Estabelecimentos considerados na análise \nde cluster"),
+       subtitle = "Quantidade: 509") +
+  theme(legend.position="none") -> df_plot
+
+grid.arrange(df0_plot, df_plot, nrow = 1)
 
 # Criando df para cluster
 dfcl <- df %>% ungroup() %>% select (rating, price_level, user_ratings_total) %>% as.data.frame()
@@ -116,22 +156,6 @@ df$c2 <- as.factor(k2$cluster)
 df$c4 <- as.factor(k4$cluster)
 
 # Plots
-# Estabelecimentos considerados na análise
-df %>%
-  ggplot() +
-  geom_polygon(data = shpBairrosGoiania, aes( x = long, y = lat, group = group, alpha = 1), size = 0.1, fill="white", color="darkblue") +
-  geom_polygon(data = shpGoiania, aes( x = long, y = lat, group = group, alpha=1), size = 0.8, fill="white", color="darkblue") +
-  geom_point(aes(x=lng, y=lat), colour = "black", size = 0.1) + 
-  coord_equal() +
-  scalebar(shpGoiania, dist = 5, dist_unit = "km",
-           transform = TRUE, model = "WGS84", height = 0.015, st.size = 3, border.size = 0.3) +
-  theme_bw() +
-  xlab("Longitude") +
-  ylab("Latitude") +
-  guides(fill = guide_legend(label.position = "left", label.hjust = 1)) +
-  labs(title = ("Estabelecimentos considerados na análise de cluster")) +
-  theme(legend.position="none")
-
 # Clusters 4
 df %>%
   ggplot() +
