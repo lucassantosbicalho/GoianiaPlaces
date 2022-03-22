@@ -13,9 +13,6 @@ library(xtable)
 library(scales)
 library(ggsn)
 
-# Removendo outlier ChIJCcvH5tnzXpMRz6ktmMrEzf0
-places_goiania %>% filter(place_id != "ChIJCcvH5tnzXpMRz6ktmMrEzf0") -> places_goiania_
-
 # Removendo duplicados
 places_goiania_ %>%
   group_by(lat, lng, place_id, name) %>% 
