@@ -176,4 +176,7 @@ df %>%
 
 update_labels(p, list(colour="Clusters"))
 
+# Valores medios por cluster
+df %>% group_by(c4) %>% summarise(mrating = mean(rating), mprice_level = mean(price_level), muser_ratings_total = mean(user_ratings_total),n = n())
+
               
